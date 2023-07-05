@@ -1,37 +1,80 @@
 import React, { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
-import { FaTimesCircle } from 'react-icons/fa';
+import { FaMinusCircle, FaPlusCircle, FaTimesCircle } from 'react-icons/fa';
+
 const ExpenseItem = (props) => {
-  const { dispatch, Location } = useContext(AppContext);
-  const handleDeleteItem = () => {
-    const item = {
-      name: props.name,
-    };
+  const { dispatch, currency } = useContext(AppContext);
+
+  const handleDeleteExpense = (e) => {
+    e.stopPropagation();
     dispatch({
-      type: 'DELETE_ITEM',
-      payload: item,
+      type: 'DELETE_EXPENSE',
+      payload: props.id,
     });
   };
+
+  const increaseAllocation = (name) => {
+    const expense = {
+      name: name,
+      cost: 10,
+    };
+
+    dispatch({
+      type: 'ADD_EXPENSE',
+      payload: expense,
+    });
+  };
+
+  const decreaseAllocation = (name) => {
+    const expense = {
+      name: name,
+      cost: 10,
+    };
+
+    dispatch({
+      type: 'RED_EXPENSE',
+      payload: expense,
+    });
+  };
+
   return (
     <tr>
       <td>{props.name}</td>
-      <td>{props.quantity}</td>
       <td>
-        {Location}
-        {parseInt(props.unitprice)}
+        {currency}
+        {props.cost}
       </td>
       <td>
-        {Location}
-        {parseInt(props.quantity) * parseInt(props.unitprice)}
+        <button style={{ border: 'none', backgroundColor: 'transparent' }}>
+          <FaPlusCircle
+            size='2.2em'
+            color='green'
+            onClick={(e) => {
+              e.stopPropagation();
+              increaseAllocation(props.name);
+            }}
+          />
+        </button>
       </td>
       <td>
-        <FaTimesCircle
-          size='2.2em'
-          color='red'
-          onClick={handleDeleteItem}
-        ></FaTimesCircle>
+        <button style={{ border: 'none', backgroundColor: 'transparent' }}>
+          <FaMinusCircle
+            size='2.2em'
+            color='red'
+            onClick={(e) => {
+              e.stopPropagation();
+              decreaseAllocation(props.name);
+            }}
+          />
+        </button>
+      </td>
+      <td>
+        <button style={{ border: 'none', backgroundColor: 'transparent' }}>
+          <FaTimesCircle size='1.8em' onClick={handleDeleteExpense} />
+        </button>
       </td>
     </tr>
   );
 };
+
 export default ExpenseItem;

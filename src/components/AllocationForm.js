@@ -1,69 +1,82 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
-const ItemSelected = (props) => {
-  const { dispatch } = useContext(AppContext);
+
+const AllocationForm = (props) => {
+  const { dispatch, remaining, currency } = useContext(AppContext);
+
   const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [cost, setCost] = useState('');
   const [action, setAction] = useState('');
 
-  const submitEvent = () => {
-    const item = {
+  const submite = () => {
+    if (cost > remaining) {
+      alert('The value cannot exceed remaining funds  £' + remaining);
+      setCost('');
+      return;
+    }
+
+    const expense = {
       name: name,
-      quantity: parseInt(quantity),
+      cost: parseInt(cost),
     };
     if (action === 'Reduce') {
       dispatch({
-        type: 'RED_QUANTITY',
-        payload: item,
+        type: 'RED_EXPENSE',
+        payload: expense,
       });
     } else {
       dispatch({
-        type: 'ADD_QUANTITY',
-        payload: item,
+        type: 'ADD_EXPENSE',
+        payload: expense,
       });
     }
   };
+
   return (
     <div>
       <div className='row'>
         <div className='input-group mb-3' style={{ marginLeft: '2rem' }}>
-          <div className='input-group-prepend'>
+          <div className='input-group-prepend '>
             <label className='input-group-text' htmlFor='inputGroupSelect01'>
-              Items
+              Department
             </label>
           </div>
+
           <select
+            style={{ height: '2.4em' }}
             className='custom-select'
             id='inputGroupSelect01'
-            onChange={(event) => setName(event.target.value)}
+            onChange={(e) => setName(e.target.value)}
           >
             <option defaultValue>Choose...</option>
-            <option value='Shirt' name='Shirt'>
+            <option value='Marketing' name='marketing'>
               {' '}
-              Shirt
+              Marketing
             </option>
-            <option value='Dress' name='Dress'>
-              Dress
+            <option value='Sales' name='sales'>
+              Sales
             </option>
-            <option value='Jeans' name='Jeans'>
-              Jeans
+            <option value='Finance' name='finance'>
+              Finance
             </option>
-            <option value='Dinner set' name='Dinner set'>
-              Dinner set
+            <option value='HR' name='hr'>
+              HR
             </option>
-            <option value='Bags' name='Bags'>
-              Bags
+            <option value='IT' name='it'>
+              IT
             </option>
           </select>
+
           <div className='input-group-prepend' style={{ marginLeft: '2rem' }}>
             <label className='input-group-text' htmlFor='inputGroupSelect02'>
-              Quantity
+              Allocation
             </label>
           </div>
           <select
+            style={{ height: '2.4em' }}
             className='custom-select'
             id='inputGroupSelect02'
-            onChange={(event) => setAction(event.target.value)}
+            onChange={(e) => setAction(e.target.value)}
           >
             <option defaultValue value='Add' name='Add'>
               Add
@@ -72,21 +85,24 @@ const ItemSelected = (props) => {
               Reduce
             </option>
           </select>
-          <span
-            className='eco'
-            style={{ marginLeft: '2rem', marginRight: '8px' }}
-          ></span>
+          <div
+            style={{ marginLeft: '2rem', marginRight: '0.5em', fontSize: 30 }}
+            text-align='right'
+          >
+            {currency}
+          </div>
           <input
             required='required'
             type='number'
             id='cost'
-            value={quantity}
+            value={cost}
             style={{ size: 10 }}
-            onChange={(event) => setQuantity(event.target.value)}
+            onChange={(e) => setCost(e.target.value)}
           ></input>
+
           <button
             className='btn btn-primary'
-            onClick={submitEvent}
+            onClick={submite}
             style={{ marginLeft: '2rem' }}
           >
             Save
@@ -96,4 +112,5 @@ const ItemSelected = (props) => {
     </div>
   );
 };
-export default ItemSelected;
+
+export default AllocationForm;
